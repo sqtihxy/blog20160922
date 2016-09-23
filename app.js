@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');//解析请求体的
 
 var routes = require('./routes/index');//根路由
 var users = require('./routes/users');//用户路由
+var articles = require('./routes/articles'); //文章路由
 
 var app = express();//生成一个express实例 app
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));//设置public文件夹�
 
 app.use('/', routes);//根目录的路由
 app.use('/users', users); // 用户路由
+app.use('/articles', articles);
 
 // catch 404 and forward to error handler 捕获404错误，并转发到错误处理器。
 app.use(function(req, res, next) {
