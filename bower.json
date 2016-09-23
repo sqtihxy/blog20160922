@@ -1,0 +1,22 @@
+{
+  "name": "blog20160923",
+  "description": "",
+  "main": "",
+  "authors": [
+    "CSS-Mechanic <luanshiyipiaoling@163.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sqtihxy/blog20160923",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./public/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
