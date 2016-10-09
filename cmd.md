@@ -27,3 +27,12 @@
 
 ```
 
+#安装数据库
+> npm install mongoose
+
+#安装会话中间件
+
+> npm install express-session connect-mongo --save
+
+#显示提示
+>npm install connect-flash --save

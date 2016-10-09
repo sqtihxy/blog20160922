@@ -1,13 +1,20 @@
 var express = require('express'); //导入express模块
 var path = require('path');//处理路径
-var favicon = require('serve-favicon');//处理收藏夹图标的
+// var favicon = require('serve-favicon');//处理收藏夹图标的
 var logger = require('morgan');//处理日志
 var cookieParser = require('cookie-parser');//处理cookie req.cookie req.cookies
 var bodyParser = require('body-parser');//解析请求体的
 
+var session = require('express-session');
+var MongoStore = require('connect-mongo/es5')(session);
+var flash = require('connect-flash');
+
 var routes = require('./routes/index');//根路由
 var users = require('./routes/users');//用户路由
 var articles = require('./routes/articles'); //文章路由
+
+require('./util');
+require('./db');
 
 var app = express();//生成一个express实例 app
 
@@ -22,6 +29,21 @@ app.use(logger('dev'));// 加载日志中间件。
 app.use(bodyParser.json());//加载解析json的中间件。
 app.use(bodyParser.urlencoded({ extended: false }));//加载解析urlencoded请求体的中间件。
 app.use(cookieParser()); //加载解析cookie的中间件。
+
+var settings = require('./settings');
+app.use(session({
+      secret: 'blog20160923',
+      saveUninitialized:true,
+      resave:true,
+      store:new MongoStore({url:settings.dbUrl})
+}));
+app.use(flash());
+app.use(function(req,res,next){
+      res.locals.user =  req.session.user;
+      res.locals.success =  req.flash('success').toString();
+      res.locals.error =  req.flash('error').toString();
+      next();
+});
 app.use(express.static(path.join(__dirname, 'public')));//设置public文件夹为存放静态文件的目录。
 
 app.use('/', routes);//根目录的路由
