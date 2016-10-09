@@ -13,6 +13,30 @@ var storage = multer.diskStorage({
     }
 })
 var upload = multer({ storage: storage });
+router.get('/list/:pageNum/:pageSize',auth.mustLogin, function(req, res, next) {
+    var pageNum = parseInt(req.params.pageNum);
+    var pageSize = parseInt(req.params.pageSize);
+    var query = {};
+    if(req.query.keyword){
+        req.session.keyword = req.query.keyword;
+        query['title'] = new RegExp(req.query.keyword,'i');
+    }
+    Model('Article').count(query,function(err,count){
+        Model('Article').find(query).skip((pageNum-1)*pageSize).limit(pageSize).sort({createAt:-1}).populate('user').exec(function(err,articles){
+            articles.forEach(function (article) {
+                article.content = markdown.toHTML(article.content);
+            });
+            res.render('index',{
+                articles:articles,
+                keyword:req.query.keyword,
+                pageNum:pageNum,
+                pageSize:pageSize,
+                totalPage:Math.ceil(count/pageSize)
+            });
+        });
+    });
+
+});
 /* 添加文章 */
 router.get('/add',auth.mustLogin,function(req, res, next) {
     res.render('articles/add', {article:{}});
