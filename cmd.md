@@ -36,3 +36,6 @@
 
 #显示提示
 >npm install connect-flash --save
+
+#安装markdown和图片上传multer
+>npm install markdown multer --save
