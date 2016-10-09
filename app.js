@@ -29,15 +29,18 @@ app.use(logger('dev'));// 加载日志中间件。
 app.use(bodyParser.json());//加载解析json的中间件。
 app.use(bodyParser.urlencoded({ extended: false }));//加载解析urlencoded请求体的中间件。
 app.use(cookieParser()); //加载解析cookie的中间件。
-
+//先加载cookie中间件
 var settings = require('./settings');
+//再加载会话session中间件,它依赖cookie
 app.use(session({
       secret: 'blog20160923',
       saveUninitialized:true,
       resave:true,
       store:new MongoStore({url:settings.dbUrl})
 }));
+//再加载flash中间件，它依赖session
 app.use(flash());
+//模板变量处理中间件它依赖flash
 app.use(function(req,res,next){
       res.locals.user =  req.session.user;
       res.locals.success =  req.flash('success').toString();
@@ -45,7 +48,7 @@ app.use(function(req,res,next){
       next();
 });
 app.use(express.static(path.join(__dirname, 'public')));//设置public文件夹为存放静态文件的目录。
-
+//路由中的模板渲染依赖flash中间件
 app.use('/', routes);//根目录的路由
 app.use('/users', users); // 用户路由
 app.use('/articles', articles);
